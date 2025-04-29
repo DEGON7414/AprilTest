@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * ClassName: PDFReader
  * Description:
- * 將提取到的資料 轉為收據PDF 並匯出
+ *  將提取到的資料 轉為收據PDF 並匯出
  *
  *
  * @Author 許記源
@@ -47,7 +47,7 @@ public class CreateReceipt {
         pdDocument.addPage(pdPage);
 
         try (PDPageContentStream pdPageContentStream = new PDPageContentStream(pdDocument, pdPage)) {
-            File fontFile = new File("C:\\Windows\\Fonts\\kaiu.ttf");
+            File fontFile = new File("C:\\Users\\cxhil\\Downloads\\Fonts_Kai\\TW-Kai-98_1.ttf");
             if (!fontFile.exists()) {
                 System.out.println("字型文件不存在！");
                 return;
