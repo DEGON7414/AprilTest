@@ -13,14 +13,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+
 /**
  * ClassName: PDFReader
  * Description:
  * 圖片插入到PDF
  *
- *
  * @Author 許記源
- *
  */
 
 
@@ -36,7 +35,12 @@ public class InsertImgUtils {
             throw new IOException("找不到圖片檔");
         }
 
-        Arrays.sort(imageFiles);
+        // 使用數字排序
+        Arrays.sort(imageFiles, (f1, f2) -> {
+            int num1 = extractPageNumber(f1.getName());
+            int num2 = extractPageNumber(f2.getName());
+            return Integer.compare(num1, num2);
+        });
         int imageIndex = 0;
 
         try (PDDocument document = PDDocument.load(pdfFile)) {
@@ -54,8 +58,8 @@ public class InsertImgUtils {
                 float scaleFactor = Math.min(pageWidth * 0.7f / originalImage.getWidth(), pageHeight * 0.3f / originalImage.getHeight());
                 // 確保縮放比例不會太小
                 scaleFactor = Math.max(scaleFactor, 0.35f);
-                int scaledWidth = (int)(originalImage.getWidth() * scaleFactor);
-                int scaledHeight = (int)(originalImage.getHeight() * scaleFactor);
+                int scaledWidth = (int) (originalImage.getWidth() * scaleFactor);
+                int scaledHeight = (int) (originalImage.getHeight() * scaleFactor);
 
                 // 建立縮放後的圖片
                 BufferedImage scaledImage = new BufferedImage(scaledWidth, scaledHeight, originalImage.getType());
@@ -93,6 +97,18 @@ public class InsertImgUtils {
             }
 
             document.save(outputPdf);
+        }
+    }
+
+    //抽取檔名中數字的部分
+    private static int extractPageNumber(String filename) {
+        // 假設檔名是 "page_1.jpg"、"page_2.png" 等
+        try {
+            String nameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
+            String numberPart = nameWithoutExt.replaceAll("\\D+", ""); // 移除非數字
+            return Integer.parseInt(numberPart);
+        } catch (Exception e) {
+            return Integer.MAX_VALUE; // 無法解析的放最後
         }
     }
 }
