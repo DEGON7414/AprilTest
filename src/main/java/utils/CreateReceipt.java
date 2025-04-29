@@ -10,14 +10,13 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
 /**
  * ClassName: PDFReader
  * Description:
- *  將提取到的資料 轉為收據PDF 並匯出
- *
+ * 將提取到的資料 轉為收據PDF 並匯出
  *
  * @Author 許記源
- *
  */
 public class CreateReceipt {
     // 原有方法
@@ -116,22 +115,37 @@ public class CreateReceipt {
             pdPageContentStream.stroke();
             currentY -= 20; // 分隔線下方間距
 
+            // 取得 PDF 頁面寬度
+            float pageWidth = pdPage.getMediaBox().getWidth();
+
             // 品名
             pdPageContentStream.beginText();
-            pdPageContentStream.newLineAtOffset(50, currentY);
-            pdPageContentStream.showText("品名: 出國上網設備及通信費用");
             pdPageContentStream.setFont(chineseFont, 22);
-            pdPageContentStream.endText();
-            currentY -= lineSpacing;
+            pdPageContentStream.newLineAtOffset(50, currentY);  // 品名的位置，靠左
+            pdPageContentStream.showText("品名:");
+
+            // 計算金額的位置，讓金額直接靠右
+            float amountX = pageWidth - 50 - chineseFont.getStringWidth("金額: " + paymentAmount) / 1000 * 22;  // 金額的右邊位置
 
             // 金額
+            pdPageContentStream.newLineAtOffset(amountX - 10, 0);  // 設置金額的起始位置，直接靠右
+            pdPageContentStream.showText("金額:");
+            pdPageContentStream.endText();
+
+            // 更新 Y 位置，讓下一行顯示品名和金額
+            currentY -= lineSpacing;  // 調整到下一行
+
+            // 顯示品名的具體內容
             pdPageContentStream.beginText();
             pdPageContentStream.setFont(chineseFont, 22);
+            pdPageContentStream.newLineAtOffset(50, currentY);  // 品名的位置，靠左
+            pdPageContentStream.showText("出國上網設備及通信費用");
 
-            pdPageContentStream.newLineAtOffset(50, currentY);
-            pdPageContentStream.showText("金額: " + paymentAmount);
+            // 顯示金額的具體內容
+            float amountXNextLine = pageWidth - 50 - chineseFont.getStringWidth(paymentAmount) / 1000 * 22;  // 計算金額的具體內容寬度
+            pdPageContentStream.newLineAtOffset(amountXNextLine - 50, 0);  // 金額右對齊
+            pdPageContentStream.showText(paymentAmount);
             pdPageContentStream.endText();
-            currentY -= lineSpacing;
 
             // 分隔線 2
             currentY -= 10;
