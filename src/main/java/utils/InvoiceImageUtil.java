@@ -1,7 +1,6 @@
 package utils;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.font.PDType0Font;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
@@ -33,7 +32,8 @@ import java.util.List;
 public class InvoiceImageUtil {
     /**
      * 將 PDF 檔案轉換為高品質圖片
-     * @param pdfFile PDF 檔案
+     *
+     * @param pdfFile   PDF 檔案
      * @param outputDir 輸出目錄
      * @return 生成的圖片路徑列表
      */
@@ -94,10 +94,11 @@ public class InvoiceImageUtil {
 
     /**
      * 旋轉圖片 270 度
+     *
      * @param image 原始圖片
      * @return 旋轉後的圖片
      */
-    private static BufferedImage rotateImage(BufferedImage image) {
+    public static BufferedImage rotateImage(BufferedImage image) {
         int width = image.getHeight();
         int height = image.getWidth();
 
@@ -110,7 +111,7 @@ public class InvoiceImageUtil {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-        // 旋轉 270 度 (順時針)
+        // 旋轉 270 度
         g2d.translate(0, height);
         g2d.rotate(-Math.PI / 2);
         g2d.drawImage(image, 0, 0, null);

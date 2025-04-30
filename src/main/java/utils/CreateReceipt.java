@@ -19,27 +19,6 @@ import java.io.IOException;
  * @Author 許記源
  */
 public class CreateReceipt {
-    // 原有方法
-    public static void createReceipt(String outputFilePath, String receiptNumber, String date, String paymentAmount, String imagePath) {
-        if (!outputFilePath.toLowerCase().endsWith(".pdf")) {
-            outputFilePath = outputFilePath + "\\receipt_" + receiptNumber + ".pdf";
-        }
-        File outputFile = new File(outputFilePath);
-        File parentDir = outputFile.getParentFile();
-        if (parentDir != null && !parentDir.exists()) {
-            parentDir.mkdirs();
-        }
-
-        try (PDDocument pdDocument = new PDDocument()) {
-            // 添加收據頁面到文檔
-            addReceiptToDocument(pdDocument, receiptNumber, date, paymentAmount, imagePath);
-            // 保存文檔
-            pdDocument.save(outputFilePath);
-        } catch (IOException e) {
-            throw new RuntimeException("無法保存 PDF 檔案: " + outputFilePath, e);
-        }
-    }
-
     // 新增方法：將收據頁面添加到現有文檔
     public static void addReceiptToDocument(PDDocument pdDocument, String receiptNumber, String date, String paymentAmount, String imagePath) throws IOException {
         PDPage pdPage = new PDPage(PDRectangle.A4);
