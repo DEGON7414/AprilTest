@@ -25,11 +25,9 @@ import java.io.IOException;
  */
 public class PicInsert {
     // 插入圖片到 PDF 中的方法
-    public static boolean insertPic(PDDocument document, File picFile) {
+    public static boolean insertPic(PDDocument document,PDPage page ,File picFile) {
         try {
-            int numberOfPages = document.getNumberOfPages();
-            for (int i = 1; i < numberOfPages; i += 2) {
-                PDPage page = document.getPage(i);
+
                 float pageWidth = page.getMediaBox().getWidth();
                 float pageHeight = page.getMediaBox().getHeight();
 
@@ -39,19 +37,21 @@ public class PicInsert {
                 float imageHeight = image.getHeight();
 
                 // 縮放比例
-                float scaleFactor = Math.min(pageHeight * 0.3f / imageWidth, pageWidth * 0.3f / imageHeight);
+                float scaleFactor = Math.min(pageHeight * 0.4f / imageWidth, pageWidth * 0.4f / imageHeight);
                 float drawWidth = imageWidth * scaleFactor;
                 float drawHeight = imageHeight * scaleFactor;
 
                 // 設定圖片在右下角（有邊距）
+                //Y軸減是往左
+                //X軸 加是向下
                 float margin = 10;
-                float x = pageWidth - drawWidth - margin;
-                float y = margin;
+                float x = pageWidth - drawWidth - margin-5;
+                float y = margin+ 45;
 
                 try (PDPageContentStream contentStream = new PDPageContentStream(document, page, PDPageContentStream.AppendMode.APPEND, true)) {
                     contentStream.drawImage(image, x, y, drawWidth, drawHeight);
                 }
-            }
+
             return true;
         } catch (IOException e) {
             e.printStackTrace();

@@ -9,29 +9,34 @@ package utils;
  * @Version 1.0
  */
 public class AmountToChinese {
-    public static  String covertAmountToChinese(int amount) {
-        String [] chinsesNumbers ={"零", "壹", "貳", "參", "肆", "伍", "陸", "柒", "捌", "玖"} ;
-        String [] units = {"", "拾", "佰", "仟", "萬", "億", "兆"};
-        if (amount < 0) {
-            return null;
+    public static String covertAmountToChinese(int amount) {
+        String[] chineseNumbers = {"零", "壹", "貳", "參", "肆", "伍", "陸", "柒", "捌", "玖"};
+        String[] units = {"仟萬", "佰萬", "拾萬", "萬", "仟", "佰", "拾", ""}; // 固定8位
+
+        if (amount < 0 || amount > 99999999) {
+            return "金額超出範圍";
         }
-        StringBuilder rs = new StringBuilder();
-        int unitindex = 0;
-        while (amount > 0) {
-            int i = amount % 10;
-            if(i !=0){
-                rs.insert(0, chinsesNumbers[i ]+units[unitindex]);
-            }else {
-                if(rs.length()>0 && rs.charAt(0) !='零'){
-                    rs.insert(0,chinsesNumbers[i ]);
-                }
+
+        String amountStr = String.format("%08d", amount); // 補滿8位數
+        StringBuilder result = new StringBuilder();
+        boolean started = false; // 是否開始輸出（略過萬位之前的0）
+
+        for (int i = 0; i < 8; i++) {
+            int digit = amountStr.charAt(i) - '0';
+            String unit = units[i];
+
+            // 只要萬以下，強制開始輸出
+            if (i >= 3) {
+                started = true;
             }
-            amount /= 10;
-            unitindex++;
+
+            // 如果該位不是 0 或已經開始輸出，就印出該位
+            if (digit != 0 || started) {
+                result.append(chineseNumbers[digit]).append(unit);
+                started = true;
+            }
         }
-        if(rs.charAt(0)=='零'){
-            rs.deleteCharAt(0);
-        }
-        return rs.toString()+ "元";
+
+        return result.toString() + "元";
     }
 }
